@@ -32,7 +32,7 @@ jobs:
         pip install Cython==0.29.33 virtualenv
         pip install buildozer
 
-    - name: Setup Android SDK and Force NDK 25b
+    - name: Setup Legacy SDK Tools Path & NDK 25b
       run: |
         TARGET_DIR="/home/runner/.buildozer/android/platform/android-sdk"
         mkdir -p "$TARGET_DIR"
@@ -45,15 +45,20 @@ jobs:
         mkdir -p "$TARGET_DIR/licenses"
         printf "89337d0c3dbbab2747d4847616d0408d47fb314a\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78ba6edcb13959c499" > "$TARGET_DIR/licenses/android-sdk-license"
 
-        # NDK 25b डाउनलोड करके r28c के नाम से लिंक करना ताकि Buildozer बाईपास हो जाए
         cd /tmp
         wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
         unzip -q android-ndk-r25b-linux.zip
         mkdir -p /home/runner/.buildozer/android/platform
-        mv android-ndk-r25b /home/runner/.buildozer/android/platform/android-ndk-r28c
+        rm -rf /home/runner/.buildozer/android/platform/android-ndk-r*
+        mv android-ndk-r25b /home/runner/.buildozer/android/platform/android-ndk-r25b
+        ln -s /home/runner/.buildozer/android/platform/android-ndk-r25b /home/runner/.buildozer/android/platform/android-ndk-r28c
 
     - name: Build APK with Buildozer
       run: |
+        unset ANDROID_NDK_HOME
+        unset ANDROID_NDK_LATEST_HOME
+        export ANDROID_NDK_HOME="/home/runner/.buildozer/android/platform/android-ndk-r25b"
+        export ANDROIDNDK="/home/runner/.buildozer/android/platform/android-ndk-r25b"
         buildozer android debug
 
     - name: Upload APK
@@ -61,4 +66,3 @@ jobs:
       with:
         name: Bharat-Jan-Munshi-APK
         path: bin/*.apk
-        
