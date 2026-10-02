@@ -24,14 +24,10 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Android SDK and NDK 23b
+    - name: Accept Licenses & Prepare SDK Tools
       run: |
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0"
-        cd /tmp
-        wget -q https://dl.google.com/android/repository/android-ndk-r23b-linux.zip
-        unzip -q android-ndk-r23b-linux.zip
-        sudo mv android-ndk-r23b /usr/local/android-ndk
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
     - name: Install Build Dependencies
       run: |
@@ -39,13 +35,12 @@ jobs:
         sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
         python -m pip install --upgrade pip
         pip install "setuptools<65.5.0" "wheel<0.39.0"
-        pip install Cython==0.29.33 virtualenv
+        pip install "Cython<3.0" virtualenv
         pip install python-for-android
 
     - name: Build APK Directly
-      env:
-        PIP_NO_BUILD_ISOLATION: "false"
       run: |
+        NDK_PATH=$(find /usr/local/lib/android/sdk/ndk -maxdepth 1 -name "25.*" | head -n 1)
         mkdir -p bin
         p4a apk --private . \
           --package=com.bharat.janmunshi \
@@ -54,8 +49,8 @@ jobs:
           --bootstrap=webview \
           --requirements=python3,flask \
           --sdk-dir=$ANDROID_HOME \
-          --ndk-dir=/usr/local/android-ndk \
-          --android-api=31 \
+          --ndk-dir=$NDK_PATH \
+          --android-api=33 \
           --permission INTERNET \
           --permission RECORD_AUDIO \
           --arch=arm64-v8a
@@ -67,3 +62,4 @@ jobs:
       with:
         name: Bharat-Jan-Munshi-APK
         path: bin/*.apk
+        
