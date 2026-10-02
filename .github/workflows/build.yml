@@ -29,30 +29,34 @@ jobs:
         sudo apt update
         sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev libjpeg-dev libfreetype6-dev
         python -m pip install --upgrade pip
+        pip install "setuptools<65.5.0" "wheel<0.39.0"
         pip install Cython==0.29.33 virtualenv
-        pip install --upgrade git+https://github.com/kivy/buildozer.git@master
+        pip install buildozer
 
-    - name: Setup Android SDK directly
+    - name: Configure SDK Licenses and Tools
       run: |
-        export SDK_DIR="/home/runner/.buildozer/android/platform/android-sdk"
-        mkdir -p "$SDK_DIR/cmdline-tools"
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline.zip
-        unzip -q cmdline.zip -d "$SDK_DIR/cmdline-tools"
-        mv "$SDK_DIR/cmdline-tools/cmdline-tools" "$SDK_DIR/cmdline-tools/latest"
-        rm -f cmdline.zip
+        mkdir -p /home/runner/.android
+        touch /home/runner/.android/repositories.cfg
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0"
+
+    - name: Prepare Buildozer Spec & Paths
+      run: |
+        # NDK 25.2 का पाथ ढूंढना
+        NDK_DIR=$(find /usr/local/lib/android/sdk/ndk -maxdepth 1 -name "25.*" | head -n 1)
         
-        # Legacy tools folder create for older Buildozer routines
-        mkdir -p "$SDK_DIR/tools/bin"
-        cp "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" "$SDK_DIR/tools/bin/"
-        
-        yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-        "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-31" "build-tools;31.0.0"
+        # buildozer.spec में सीधे पाथ और सेटिंग्स इंजेक्ट करना
+        sed -i "s|^#* *android.sdk_path *=.*|android.sdk_path = $ANDROID_HOME|" buildozer.spec || true
+        sed -i "s|^#* *android.ndk_path *=.*|android.ndk_path = $NDK_DIR|" buildozer.spec || true
+        sed -i "s|^#* *android.api *=.*|android.api = 31|" buildozer.spec || true
+        sed -i "s|^#* *android.minapi *=.*|android.minapi = 21|" buildozer.spec || true
+        sed -i "s|^#* *android.ndk_api *=.*|android.ndk_api = 21|" buildozer.spec || true
+        sed -i "s|^#* *android.accept_sdk_license *=.*|android.accept_sdk_license = True|" buildozer.spec || true
 
     - name: Build APK with Buildozer
       run: |
-        export ANDROID_HOME="/home/runner/.buildozer/android/platform/android-sdk"
-        export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
-        buildozer --warn_on_root=0 android debug
+        unset ANDROID_NDK_HOME
+        buildozer -v android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
