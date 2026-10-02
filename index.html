@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bharat Jan-Munshi OS - Community Dashboard</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #070d19; color: #f8fafc; margin: 0; padding: 16px; }
+        .header { text-align: center; margin-bottom: 16px; }
+        h1 { color: #38bdf8; font-size: 22px; margin: 0 0 4px 0; }
+        .creator-badge { display: inline-block; background: #1e293b; border: 1px solid #38bdf8; color: #38bdf8; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 4px; }
+        p.sub { color: #64748b; font-size: 11px; margin: 6px 0 0 0; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0; }
+        .stat-box { background: #0f172a; border-radius: 10px; padding: 10px; text-align: center; border: 1px solid #1e293b; }
+        .stat-title { font-size: 10px; color: #94a3b8; margin-bottom: 2px; }
+        .stat-val { font-size: 16px; font-weight: bold; }
+        .green { color: #4ade80; }
+        .red { color: #f43f5e; }
+        .blue { color: #38bdf8; }
+
+        .card { background: #0f172a; border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid #1e293b; }
+        h2 { font-size: 14px; margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
+        
+        .item { background: #1e293b; border-radius: 8px; padding: 10px; margin-bottom: 8px; border-left: 4px solid #38bdf8; display: flex; justify-content: space-between; align-items: center; }
+        .person { font-weight: 600; font-size: 14px; }
+        .amount { color: #4ade80; font-weight: bold; font-size: 15px; }
+        .time { color: #64748b; font-size: 10px; margin-top: 2px; }
+        
+        .case-item { background: #1e293b; border-radius: 8px; padding: 10px; margin-bottom: 8px; border-left: 4px solid #f43f5e; }
+        .badge { background: #f43f5e; color: white; padding: 2px 5px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .dept { font-weight: 600; margin-left: 4px; font-size: 13px; }
+        .draft-text { color: #cbd5e1; font-size: 12px; margin: 4px 0; }
+        
+        .pill-grid { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        .pill { background: #1e293b; border: 1px solid #334155; padding: 6px 10px; border-radius: 8px; font-size: 11px; white-space: nowrap; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🇮🇳 Bharat Jan-Munshi OS v11.0</h1>
+        <div class="creator-badge">⚡ Nirmaata: Sahil Ahmad</div>
+        <p class="sub">7-Pillar Full Architecture | 100% Offline Mesh</p>
+    </div>
+
+    <!-- 7-Pillars Indicator Bar -->
+    <div class="pill-grid">
+        <div class="pill">🎙️ Voice Ears</div>
+        <div class="pill">🔒 UPI Shield + PIN</div>
+        <div class="pill">🚨 Fraud Siren</div>
+        <div class="pill">⚖️ Law Grievance</div>
+        <div class="pill">🌾 Mandi & Labor</div>
+        <div class="pill">🌐 Offline Mesh</div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-title">कुल दर्ज हिसाब</div>
+            <div class="stat-val green" id="sum-amount">₹0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-title">सरकारी केस</div>
+            <div class="stat-val red" id="sum-cases">0</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-title">दैनिक मजदूरी</div>
+            <div class="stat-val blue">₹440/दिन</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 style="color: #4ade80;">
+            <span>📒 खाता-बही लेजर</span>
+            <span style="font-size: 11px; color: #94a3b8;" id="entry-count">0</span>
+        </h2>
+        <div id="ledger-list">डेटा लोड हो रहा है...</div>
+    </div>
+
+    <div class="card">
+        <h2 style="color: #f43f5e;">
+            <span>⚖️ सरकारी कानूनी केस व शिकायतें</span>
+        </h2>
+        <div id="grievance-list">डेटा लोड हो रहा है...</div>
+    </div>
+
+    <script>
+        function updateUI() {
+            fetch('khata_bahi.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    const c = document.getElementById('ledger-list');
+                    if (!data || data.length === 0) { c.innerHTML = '<p style="color:#64748b;margin:0;">कोई खाता दर्ज नहीं है।</p>'; return; }
+                    let total = 0;
+                    data.forEach(x => total += parseInt(x.amount || 0));
+                    document.getElementById('sum-amount').innerText = '₹' + total;
+                    document.getElementById('entry-count').innerText = data.length + ' प्रविष्टियां';
+                    c.innerHTML = data.slice().reverse().map(i => `
+                        <div class="item">
+                            <div>
+                                <div class="person">${i.name}</div>
+                                <div class="time">${i.timestamp}</div>
+                            </div>
+                            <div class="amount">₹${i.amount}</div>
+                        </div>
+                    `).join('');
+                }).catch(()=>{});
+
+            fetch('grievances.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    const c = document.getElementById('grievance-list');
+                    if (!data || data.length === 0) { c.innerHTML = '<p style="color:#64748b;margin:0;">कोई केस दर्ज नहीं है।</p>'; return; }
+                    document.getElementById('sum-cases').innerText = data.length;
+                    c.innerHTML = data.slice().reverse().map(i => `
+                        <div class="case-item">
+                            <div><span class="badge">${i.case_id}</span> <span class="dept">${i.department}</span></div>
+                            <div class="draft-text">${i.legal_draft}</div>
+                            <div class="time">${i.timestamp}</div>
+                        </div>
+                    `).join('');
+                }).catch(()=>{});
+        }
+        updateUI();
+        setInterval(updateUI, 3000);
+    </script>
+</body>
+</html>

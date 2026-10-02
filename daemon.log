@@ -1,0 +1,2 @@
+nohup: ignoring input
+./button_daemon.sh: line 6: termux-volume-keys: command not found

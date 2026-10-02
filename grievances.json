@@ -1,0 +1,27 @@
+[
+    {
+        "case_id": "CASE-172500",
+        "timestamp": "2026-10-02 17:25:00",
+        "department": "कर्मचारी भविष्य निधि संगठन (EPFO)",
+        "category": "PF",
+        "legal_draft": "फॉर्म 19/10C अनुचित रिजेक्शन के विरुद्ध शिकायत दर्ज की गई।",
+        "raw_issue": "PF Mera PF reject ho gaya hai",
+        "status": "DRAFTED_AND_READY"
+    },
+    {
+        "case_id": "CASE-184042",
+        "timestamp": "2026-10-02 18:40:42",
+        "department": "EPFO",
+        "category": "PF",
+        "legal_draft": "अनुचित रिजेक्शन के विरुद्ध विधिक शिकायत।",
+        "raw_issue": "Mera PF reject ho gaya"
+    },
+    {
+        "case_id": "CASE-185539",
+        "timestamp": "2026-10-02 18:55:39",
+        "department": "Employees Provident Fund Organisation (EPFO)",
+        "category": "PF",
+        "legal_act": "EPF & MP Act 1952 (Form 19/10C Rejection Contest)",
+        "raw_issue": "PF claim reject ho gaya bina reason ke"
+    }
+]

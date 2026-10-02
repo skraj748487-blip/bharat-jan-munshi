@@ -1,0 +1,42 @@
+::1 - - [02/Oct/2026 19:55:30] "GET /khata_bahi.json?t=1790951130545 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:30] "GET /grievances.json?t=1790951130547 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:30] code 404, message File not found
+::1 - - [02/Oct/2026 19:55:30] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [02/Oct/2026 19:55:32] "GET / HTTP/1.1" 304 -
+::1 - - [02/Oct/2026 19:55:32] "GET /khata_bahi.json?t=1790951132102 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:32] "GET /grievances.json?t=1790951132102 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:32] code 404, message File not found
+::1 - - [02/Oct/2026 19:55:32] "GET /sw.js HTTP/1.1" 404 -
+::1 - - [02/Oct/2026 19:55:33] code 404, message File not found
+::1 - - [02/Oct/2026 19:55:33] "GET /sw.js HTTP/1.1" 404 -
+::1 - - [02/Oct/2026 19:55:35] "GET /grievances.json?t=1790951135105 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:35] "GET /khata_bahi.json?t=1790951135103 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:35] "GET / HTTP/1.1" 304 -
+::1 - - [02/Oct/2026 19:55:35] "GET /khata_bahi.json?t=1790951135632 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:35] "GET /grievances.json?t=1790951135633 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:37] "GET / HTTP/1.1" 304 -
+::1 - - [02/Oct/2026 19:55:37] "GET /khata_bahi.json?t=1790951137048 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:37] "GET /grievances.json?t=1790951137049 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:37] code 404, message File not found
+::1 - - [02/Oct/2026 19:55:37] "GET /sw.js HTTP/1.1" 404 -
+::1 - - [02/Oct/2026 19:55:38] "GET / HTTP/1.1" 304 -
+::1 - - [02/Oct/2026 19:55:38] "GET /khata_bahi.json?t=1790951138144 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:38] "GET /grievances.json?t=1790951138145 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:38] code 404, message File not found
+::1 - - [02/Oct/2026 19:55:38] "GET /sw.js HTTP/1.1" 404 -
+::1 - - [02/Oct/2026 19:55:39] code 404, message File not found
+::1 - - [02/Oct/2026 19:55:39] "GET /sw.js HTTP/1.1" 404 -
+::1 - - [02/Oct/2026 19:55:41] "GET /khata_bahi.json?t=1790951141146 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:41] "GET /grievances.json?t=1790951141148 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:44] "GET /khata_bahi.json?t=1790951144151 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:44] "GET /grievances.json?t=1790951144151 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:47] "GET /grievances.json?t=1790951147148 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:47] "GET /khata_bahi.json?t=1790951147146 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:50] "GET /khata_bahi.json?t=1790951150146 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:50] "GET /grievances.json?t=1790951150146 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:53] "GET /grievances.json?t=1790951153703 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:53] "GET /khata_bahi.json?t=1790951153702 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:56] "GET /grievances.json?t=1790951156707 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:55:56] "GET /khata_bahi.json?t=1790951156704 HTTP/1.1" 200 -
+::1 - - [02/Oct/2026 19:56:01] code 404, message File not found
+::1 - - [02/Oct/2026 19:56:01] "GET /sw.js HTTP/1.1" 404 -

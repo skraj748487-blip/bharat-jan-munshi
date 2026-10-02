@@ -1,0 +1,124 @@
+[
+    {
+        "timestamp": "2026-10-02 15:29:25",
+        "name": "रमेश",
+        "amount": "500",
+        "type": "DEBIT/GIVEN",
+        "note": "रमेश को 500 रुपये दिए खाते में लिख लो"
+    },
+    {
+        "timestamp": "2026-10-02 15:36:44",
+        "name": "सुरेश",
+        "amount": "1200",
+        "type": "DEBIT/GIVEN",
+        "note": "सुरेश को 1200 रुपये दिए खाते में लिखो"
+    },
+    {
+        "timestamp": "2026-10-02 15:40:12",
+        "name": "Raju",
+        "amount": "800",
+        "raw_voice": "Raju ko 800 rupaye"
+    },
+    {
+        "timestamp": "2026-10-02 16:03:44",
+        "name": "Raju",
+        "amount": "1000",
+        "raw_voice": "Raju ke khate Mein 1000"
+    },
+    {
+        "timestamp": "2026-10-02 16:03:57",
+        "name": "Sahil",
+        "amount": "5000",
+        "raw_voice": "Sahil ke khate mein 5000 rate"
+    },
+    {
+        "timestamp": "2026-10-02 16:05:22",
+        "name": "Sahil",
+        "amount": "5000",
+        "raw_voice": "Sahil ke khate Mein ₹5000 rate"
+    },
+    {
+        "timestamp": "2026-10-02 17:13:46",
+        "name": "Raju",
+        "amount": "200",
+        "raw_voice": "Raju ko ₹200"
+    },
+    {
+        "timestamp": "2026-10-02 17:21:22",
+        "name": "Sahil",
+        "amount": "500",
+        "raw_voice": "Sahil ko ₹500"
+    },
+    {
+        "timestamp": "2026-10-02 17:21:51",
+        "name": "Sahil",
+        "amount": "500",
+        "raw_voice": "Sahil aapke khate Mein ₹500 darj"
+    },
+    {
+        "timestamp": "2026-10-02 17:59:07",
+        "name": "Sahil",
+        "amount": "500",
+        "raw_voice": "Sahil ko Sahil ko 500"
+    },
+    {
+        "timestamp": "2026-10-02 17:59:21",
+        "name": "Sahil",
+        "amount": "500",
+        "raw_voice": "Sahil ko ₹500"
+    },
+    {
+        "timestamp": "2026-10-02 17:59:35",
+        "name": "Sahil",
+        "amount": "500",
+        "raw_voice": "Sahil ko 500"
+    },
+    {
+        "timestamp": "2026-10-02 18:00:05",
+        "name": "Sahil",
+        "amount": "500",
+        "raw_voice": "Sahil ko 500"
+    },
+    {
+        "timestamp": "2026-10-02 18:01:05",
+        "name": "Sahil",
+        "amount": "500",
+        "raw_voice": "Sahil को 500 रुपये ट्रांसफर किए"
+    },
+    {
+        "timestamp": "2026-10-02 18:07:27",
+        "name": "Raju",
+        "amount": "500",
+        "raw_voice": "Raju ko Raju ko ₹500"
+    },
+    {
+        "timestamp": "2026-10-02 18:07:57",
+        "name": "Raju",
+        "amount": "500",
+        "raw_voice": "Raju को 500 रुपये ट्रांसफर किए"
+    },
+    {
+        "timestamp": "2026-10-02 18:16:38",
+        "name": "Raju",
+        "amount": "500",
+        "raw_voice": "Raju ko ₹500"
+    },
+    {
+        "timestamp": "2026-10-02 18:29:13",
+        "name": "Raju",
+        "amount": "500",
+        "raw_voice": "Raju ko 500"
+    },
+    {
+        "timestamp": "2026-10-02 19:45:42",
+        "name": "dukaan",
+        "amount": "100",
+        "raw_voice": "Sonu dukaan ko ₹100"
+    },
+    {
+        "timestamp": "2026-10-02 19:50:30",
+        "name": "din",
+        "amount": "15",
+        "raw_voice": "Thekedar 15 din ke majduri nahin de raha hai"
+    }
+]
