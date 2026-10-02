@@ -24,15 +24,15 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install System Packages & Graphics Libraries
+    - name: Install System Dependencies
       run: |
         sudo apt update
         sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev libjpeg-dev libfreetype6-dev
         python -m pip install --upgrade pip
         pip install Cython==0.29.33 virtualenv
-        pip install --upgrade buildozer
+        pip install buildozer
 
-    - name: Setup Legacy SDK Tools Path
+    - name: Setup Android SDK and NDK 25b
       run: |
         TARGET_DIR="/home/runner/.buildozer/android/platform/android-sdk"
         mkdir -p "$TARGET_DIR"
@@ -44,9 +44,21 @@ jobs:
         rm -f cmdline.zip
         mkdir -p "$TARGET_DIR/licenses"
         printf "89337d0c3dbbab2747d4847616d0408d47fb314a\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78ba6edcb13959c499" > "$TARGET_DIR/licenses/android-sdk-license"
+        
+        # Pre-install NDK 25b
+        NDK_DIR="/home/runner/.buildozer/android/platform"
+        mkdir -p "$NDK_DIR"
+        cd /tmp
+        wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        unzip -q android-ndk-r25b-linux.zip
+        mv android-ndk-r25b "$NDK_DIR/android-ndk-r25b"
 
     - name: Build APK with Buildozer
       run: |
+        sed -i 's/^#* *android.ndk_api *=.*/android.ndk_api = 21/' buildozer.spec || true
+        sed -i 's/^#* *android.api *=.*/android.api = 31/' buildozer.spec || true
+        sed -i 's/^#* *android.minapi *=.*/android.minapi = 21/' buildozer.spec || true
+        sed -i 's/^#* *android.ndk *=.*/android.ndk = 25b/' buildozer.spec || true
         buildozer android debug
 
     - name: Upload APK
