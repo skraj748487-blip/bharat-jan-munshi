@@ -24,35 +24,36 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install System Dependencies
+    - name: Accept Licenses & Install Android Build Tools
+      run: |
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+    - name: Install Build Tools
       run: |
         sudo apt update
         sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
         pip install --upgrade pip
-        pip install Cython==0.29.36 virtualenv
-        pip install --upgrade buildozer
+        pip install Cython==0.29.36 virtualenv python-for-android
 
-    - name: Fix Legacy Android SDK Tools
+    - name: Build APK Directly
       run: |
-        SDK_DIR="/home/runner/.buildozer/android/platform/android-sdk"
-        mkdir -p "$SDK_DIR"
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline.zip
-        unzip -q cmdline.zip -d "$SDK_DIR"
-        mkdir -p "$SDK_DIR/cmdline-tools/latest"
-        cp -r "$SDK_DIR/cmdline-tools/"* "$SDK_DIR/cmdline-tools/latest/" 2>/dev/null || true
-        mkdir -p "$SDK_DIR/tools/bin"
-        cp "$SDK_DIR/cmdline-tools/latest/bin/"* "$SDK_DIR/tools/bin/" 2>/dev/null || true
-        rm -f cmdline.zip
-        yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-        "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-31" "build-tools;31.0.0"
+        mkdir -p bin
+        p4a apk --private . \
+          --package=com.bharat.janmunshi \
+          --name="Bharat Jan-Munshi" \
+          --version=1.0 \
+          --bootstrap=webview \
+          --requirements=python3,flask \
+          --permission INTERNET \
+          --permission RECORD_AUDIO \
+          --arch=arm64-v8a \
+          --local-recipes=.
 
-    - name: Build APK with Buildozer
-      run: |
-        buildozer android debug
+        mv *.apk bin/ || true
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: Bharat-Jan-Munshi-APK
         path: bin/*.apk
-        
