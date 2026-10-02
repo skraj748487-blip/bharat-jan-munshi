@@ -33,30 +33,40 @@ jobs:
         pip install Cython==0.29.33 virtualenv
         pip install buildozer
 
-    - name: Configure SDK Licenses and Tools
+    - name: Pre-populate Buildozer SDK & Accept Licenses
       run: |
-        mkdir -p /home/runner/.android
-        touch /home/runner/.android/repositories.cfg
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0"
+        # 1. Buildozer के लिए जरूरी डायरेक्टरी बनाना
+        B_SDK="/home/runner/.buildozer/android/platform/android-sdk"
+        mkdir -p "$B_SDK/licenses"
 
-    - name: Prepare Buildozer Spec & Paths
-      run: |
-        # NDK 25.2 का पाथ ढूंढना
-        NDK_DIR=$(find /usr/local/lib/android/sdk/ndk -maxdepth 1 -name "25.*" | head -n 1)
-        
-        # buildozer.spec में सीधे पाथ और सेटिंग्स इंजेक्ट करना
-        sed -i "s|^#* *android.sdk_path *=.*|android.sdk_path = $ANDROID_HOME|" buildozer.spec || true
-        sed -i "s|^#* *android.ndk_path *=.*|android.ndk_path = $NDK_DIR|" buildozer.spec || true
-        sed -i "s|^#* *android.api *=.*|android.api = 31|" buildozer.spec || true
-        sed -i "s|^#* *android.minapi *=.*|android.minapi = 21|" buildozer.spec || true
-        sed -i "s|^#* *android.ndk_api *=.*|android.ndk_api = 21|" buildozer.spec || true
-        sed -i "s|^#* *android.accept_sdk_license *=.*|android.accept_sdk_license = True|" buildozer.spec || true
+        # 2. सभी Android लाइसेंस पहले ही लिखना
+        printf "89337d0c3dbbab2747d4847616d0408d47fb314a\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78ba6edcb13959c499\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de79975cc3f12bc7035cc3733ceb88" > "$B_SDK/licenses/android-sdk-license"
+        printf "84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de79975cc3f12bc7035cc3733ceb88" > "$B_SDK/licenses/android-sdk-preview-license"
+
+        # 3. सिस्टम के build-tools, platforms और platform-tools सीधे कॉपी करना
+        cp -r /usr/local/lib/android/sdk/build-tools "$B_SDK/"
+        cp -r /usr/local/lib/android/sdk/platforms "$B_SDK/"
+        cp -r /usr/local/lib/android/sdk/platform-tools "$B_SDK/"
+
+        # 4. Aidl और sdkmanager के पुराने पाथ तैयार करना
+        mkdir -p "$B_SDK/tools/bin"
+        cp -r /usr/local/lib/android/sdk/cmdline-tools/latest/* "$B_SDK/tools/" 2>/dev/null || true
+        cp -r /usr/local/lib/android/sdk/cmdline-tools/latest/bin/* "$B_SDK/tools/bin/" 2>/dev/null || true
+
+        # 5. NDK 25.2 सेट करना
+        NDK_SRC=$(find /usr/local/lib/android/sdk/ndk -maxdepth 1 -name "25.*" | head -n 1)
+        mkdir -p /home/runner/.buildozer/android/platform
+        cp -r "$NDK_SRC" /home/runner/.buildozer/android/platform/android-ndk-r25b
+        ln -s /home/runner/.buildozer/android/platform/android-ndk-r25b /home/runner/.buildozer/android/platform/android-ndk-r28c
 
     - name: Build APK with Buildozer
       run: |
         unset ANDROID_NDK_HOME
-        buildozer -v android debug
+        sed -i 's/^#* *android.api *=.*/android.api = 33/' buildozer.spec || true
+        sed -i 's/^#* *android.minapi *=.*/android.minapi = 21/' buildozer.spec || true
+        sed -i 's/^#* *android.ndk_api *=.*/android.ndk_api = 21/' buildozer.spec || true
+        sed -i 's/^#* *android.accept_sdk_license *=.*|android.accept_sdk_license = True/' buildozer.spec || true
+        buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
