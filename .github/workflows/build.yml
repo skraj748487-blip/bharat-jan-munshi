@@ -24,7 +24,12 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install System Packages
+    - name: Setup Android SDK Environment
+      run: |
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-33" "build-tools;33.0.2"
+
+    - name: Install Buildozer and Cython
       run: |
         sudo apt update
         sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
@@ -32,13 +37,10 @@ jobs:
         pip install Cython==0.29.36 virtualenv
         pip install buildozer
 
-    - name: Pre-accept Android Licenses
-      run: |
-        mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
-        printf "89337d0c3dbbab2747d4847616d0408d47fb314a\nd56f5187479451eabf01fb78ba6edcb13959c499\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-        printf "84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de79975cc3f12bc7035cc3733ceb88" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
-
-    - name: Build APK with Buildozer
+    - name: Build APK with Existing Android SDK
+      env:
+        ANDROIDSDK: /usr/local/lib/android/sdk
+        ANDROIDNDK: /usr/local/lib/android/sdk/ndk/25.2.9519653
       run: |
         buildozer android debug
 
