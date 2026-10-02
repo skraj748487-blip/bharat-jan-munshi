@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -23,16 +24,22 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install dependencies
+    - name: Accept Android Licenses & Setup Tools
+      run: |
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;33.0.2" "platforms;android-33"
+
+    - name: Install System Dependencies
       run: |
         sudo apt update
         sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
         pip install --upgrade pip
-        pip install buildozer cython virtualenv
+        pip install cython virtualenv
+        pip install "buildozer>=1.5.0"
 
     - name: Build with Buildozer
       run: |
-        yes | buildozer android debug
+        buildozer android debug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
