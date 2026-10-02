@@ -33,30 +33,31 @@ jobs:
         pip install Cython==0.29.33 virtualenv
         pip install buildozer
 
-    - name: Pre-populate Buildozer SDK & Accept Licenses
+    - name: Setup Android SDK and NDK 25b
       run: |
-        # 1. Buildozer के लिए जरूरी डायरेक्टरी बनाना
         B_SDK="/home/runner/.buildozer/android/platform/android-sdk"
-        mkdir -p "$B_SDK/licenses"
+        mkdir -p "$B_SDK/cmdline-tools"
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline.zip
+        unzip -q cmdline.zip -d "$B_SDK/cmdline-tools"
+        mv "$B_SDK/cmdline-tools/cmdline-tools" "$B_SDK/cmdline-tools/latest"
+        rm -f cmdline.zip
 
-        # 2. सभी Android लाइसेंस पहले ही लिखना
-        printf "89337d0c3dbbab2747d4847616d0408d47fb314a\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78ba6edcb13959c499\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de79975cc3f12bc7035cc3733ceb88" > "$B_SDK/licenses/android-sdk-license"
-        printf "84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de79975cc3f12bc7035cc3733ceb88" > "$B_SDK/licenses/android-sdk-preview-license"
-
-        # 3. सिस्टम के build-tools, platforms और platform-tools सीधे कॉपी करना
-        cp -r /usr/local/lib/android/sdk/build-tools "$B_SDK/"
-        cp -r /usr/local/lib/android/sdk/platforms "$B_SDK/"
-        cp -r /usr/local/lib/android/sdk/platform-tools "$B_SDK/"
-
-        # 4. Aidl और sdkmanager के पुराने पाथ तैयार करना
+        # Legacy tools path for older Buildozer lookups
         mkdir -p "$B_SDK/tools/bin"
-        cp -r /usr/local/lib/android/sdk/cmdline-tools/latest/* "$B_SDK/tools/" 2>/dev/null || true
-        cp -r /usr/local/lib/android/sdk/cmdline-tools/latest/bin/* "$B_SDK/tools/bin/" 2>/dev/null || true
+        cp -r "$B_SDK/cmdline-tools/latest/bin/"* "$B_SDK/tools/bin/"
+        cp -r "$B_SDK/cmdline-tools/latest/lib" "$B_SDK/tools/" 2>/dev/null || true
 
-        # 5. NDK 25.2 सेट करना
-        NDK_SRC=$(find /usr/local/lib/android/sdk/ndk -maxdepth 1 -name "25.*" | head -n 1)
+        # Accept licenses and install platform tools
+        yes | "$B_SDK/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+        "$B_SDK/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+        # Download and install NDK 25b directly
+        cd /tmp
+        wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        unzip -q android-ndk-r25b-linux.zip
         mkdir -p /home/runner/.buildozer/android/platform
-        cp -r "$NDK_SRC" /home/runner/.buildozer/android/platform/android-ndk-r25b
+        rm -rf /home/runner/.buildozer/android/platform/android-ndk-r*
+        mv android-ndk-r25b /home/runner/.buildozer/android/platform/android-ndk-r25b
         ln -s /home/runner/.buildozer/android/platform/android-ndk-r25b /home/runner/.buildozer/android/platform/android-ndk-r28c
 
     - name: Build APK with Buildozer
@@ -65,7 +66,7 @@ jobs:
         sed -i 's/^#* *android.api *=.*/android.api = 33/' buildozer.spec || true
         sed -i 's/^#* *android.minapi *=.*/android.minapi = 21/' buildozer.spec || true
         sed -i 's/^#* *android.ndk_api *=.*/android.ndk_api = 21/' buildozer.spec || true
-        sed -i 's/^#* *android.accept_sdk_license *=.*|android.accept_sdk_license = True/' buildozer.spec || true
+        sed -i 's/^#* *android.accept_sdk_license *=.*/android.accept_sdk_license = True/' buildozer.spec || true
         buildozer android debug
 
     - name: Upload APK
