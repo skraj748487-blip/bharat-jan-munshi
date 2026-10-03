@@ -29,7 +29,7 @@ jobs:
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
         $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0"
 
-    - name: Install Dependencies
+    - name: Install System Dependencies
       run: |
         sudo apt update
         sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev libjpeg-dev libfreetype6-dev
@@ -46,6 +46,9 @@ jobs:
         sudo mv android-ndk-r25b /opt/android-ndk-r25b
 
     - name: Build APK Directly with p4a
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        P4A_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         mkdir -p bin
         p4a apk \
